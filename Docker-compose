@@ -1,0 +1,43 @@
+services:
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_DB: mydatabase
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - my-net
+  backend:
+    build:
+      context: ./backend
+    depends_on:
+      - db
+    environment:
+      DB_USER: myuser
+      DB_PASSWORD: mypassword
+      DB_SERVER: db  # IMPORTANT: This must match the service name of the database
+      DB_NAME: mydatabase
+      DB_PORT: 5432
+    ports:
+      - "3000:3000"
+    networks:
+      - my-net
+  frontend:
+    build:
+      context: ./frontend
+    depends_on:
+      - backend
+    ports:
+      - "80:80"
+    environment:
+      API_URL: "http://localhost:3000/"
+    networks:
+      - my-net
+volumes:
+  db_data:
+networks:
+  my-net:
