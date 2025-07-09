@@ -1,0 +1,34 @@
+name: Deploy 3-Tier App
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Copy files to VM
+      uses: appleboy/scp-action@v0.1.4
+      with:
+        host: ${{ secrets.VM_HOST }}
+        username: ${{ secrets.VM_USER }}
+        password: ${{ secrets.VM_PASSWORD }}
+        source: "."
+        target: "~/demo-github-action"
+
+    - name: Deploy on VM via SSH
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.VM_HOST }}
+        username: ${{ secrets.VM_USER }}
+        password: ${{ secrets.VM_PASSWORD }}
+        script: |
+          cd ~/demo-github-action
+          docker compose down
+          docker compose up -d --build
