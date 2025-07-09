@@ -1,9 +1,9 @@
-name: Deploy 3-Tier App
+name: Deploy the best 3-Tier App
 
-#on:
-  #push:
-   # branches:
-    #  - main
+on:
+  push:
+    branches:
+      - main
 
 jobs:
   deploy:
@@ -30,5 +30,6 @@ jobs:
         password: ${{ secrets.VM_PASSWORD }}
         script: |
           cd ~/demo-github-action
-          docker compose down
+          
+          docker compose down 
           docker compose up -d --build
