@@ -13,6 +13,15 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
+    - name: clean VM
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.VM_HOST }}
+        username: ${{ secrets.VM_USER }}
+        password: ${{ secrets.VM_PASSWORD }}
+        script: |
+          rm -rf ~/demo-github-action/*
+
     - name: Copy files to VM
       uses: appleboy/scp-action@v0.1.4
       with:
@@ -30,6 +39,5 @@ jobs:
         password: ${{ secrets.VM_PASSWORD }}
         script: |
           cd ~/demo-github-action
-          
           docker compose down 
           docker compose up -d --build
