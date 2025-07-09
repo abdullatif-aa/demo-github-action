@@ -13,7 +13,7 @@ services:
       - my-net
   backend:
     build:
-      context: ./backend
+      context: ./api
     depends_on:
       - db
     environment:
@@ -28,7 +28,7 @@ services:
       - my-net
   frontend:
     build:
-      context: ./frontend
+      context: ./ui
     depends_on:
       - backend
     ports:
